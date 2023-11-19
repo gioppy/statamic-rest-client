@@ -3,6 +3,7 @@
 namespace Gioppy\StatamicRestClient;
 
 use GuzzleHttp\Client;
+use Illuminate\Support\Collection;
 use Psr\Http\Message\ResponseInterface;
 
 class StatamicRestClient
@@ -10,6 +11,7 @@ class StatamicRestClient
 
   private string $endpoint;
   private Client $client;
+  private string $path;
   private array $query = [];
   private ResponseInterface $response;
 
@@ -78,6 +80,28 @@ class StatamicRestClient
     return $this;
   }
 
+  public function dump(): StatamicRestClient
+  {
+    dump(['path' => $this->path, 'query' => $this->query]);
+    return $this;
+  }
+
+  /**
+   * Add limit and page query parameters
+   *
+   * @param int $limit Number of items
+   * @param int|null $page Page to load; leave empty to load first page
+   * @return $this
+   */
+  public function paginate(int $limit, int $page = null): StatamicRestClient
+  {
+    $this->query['limit'] = $limit;
+    if ($page) {
+      $this->query['page'] = $page;
+    }
+    return $this;
+  }
+
   /**
    * Get all entries from collection
    *
@@ -87,7 +111,8 @@ class StatamicRestClient
    */
   public function collection(string $collection): StatamicRestClient
   {
-    $this->response = $this->client->get("/{$this->endpoint}/collections/{$collection}/entries", [
+    $this->path = "/{$this->endpoint}/collections/{$collection}/entries";
+    $this->response = $this->client->get($this->path, [
       'query' => $this->query,
     ]);
 
@@ -104,7 +129,8 @@ class StatamicRestClient
    */
   public function entry(string $collection, string $id): StatamicRestClient
   {
-    $this->response = $this->client->get("/{$this->endpoint}/collections/{$collection}/entries/{$id}", [
+    $this->path = "/{$this->endpoint}/collections/{$collection}/entries/{$id}";
+    $this->response = $this->client->get($this->path, [
       'query' => $this->query,
     ]);
     return $this;
@@ -119,7 +145,8 @@ class StatamicRestClient
    */
   public function assets(string $container): StatamicRestClient
   {
-    $this->response = $this->client->get("/{$this->endpoint}/assets/{$container}", [
+    $this->path = "/{$this->endpoint}/assets/{$container}";
+    $this->response = $this->client->get($this->path, [
       'query' => $this->query,
     ]);
     return $this;
@@ -135,7 +162,8 @@ class StatamicRestClient
    */
   public function asset(string $container, string $path): StatamicRestClient
   {
-    $this->response = $this->client->get("/{$this->endpoint}/assets/{$container}/{$path}", [
+    $this->path = "/{$this->endpoint}/assets/{$container}/{$path}";
+    $this->response = $this->client->get($this->path, [
       'query' => $this->query,
     ]);
     return $this;
@@ -155,11 +183,22 @@ class StatamicRestClient
 
   /**
    * Get data node from response
+   *
    * @return array
    */
   public function data(): array
   {
     return (array) json_decode($this->response->getBody()->getContents())->data;
+  }
+
+  /**
+   * Return data node from response as Collection
+   *
+   * @return Collection
+   */
+  public function toCollection(): Collection
+  {
+    return collect(json_decode($this->response->getBody()->getContents())->data);
   }
 
 }
