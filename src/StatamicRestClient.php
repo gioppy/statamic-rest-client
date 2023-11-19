@@ -91,10 +91,6 @@ class StatamicRestClient
       'query' => $this->query,
     ]);
 
-    if ($this->response->getStatusCode() !== 200 && $this->response->getStatusCode() !== 300) {
-      // TODO: throw exception
-    }
-
     return $this;
   }
 
