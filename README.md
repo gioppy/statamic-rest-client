@@ -10,13 +10,13 @@ The package needs at least php 8.1, and depend on `guzzlehttp/guzzle` and `illum
 ## TODO
 - [x] Entries
 - [x] Entry
-- [] Collection Tree
-- [] Navigation Tree
-- [] Taxonomy Terms
-- [] Taxonomy Term
+- [ ] Collection Tree
+- [ ] Navigation Tree
+- [ ] Taxonomy Terms
+- [ ] Taxonomy Term
 - [x] Assets
 - [x] Asset
-- [] Globals
-- [] Global
-- [] Test
-- [] Laravel integration
+- [ ] Globals
+- [ ] Global
+- [ ] Test
+- [ ] Laravel integration
