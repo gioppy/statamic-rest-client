@@ -15,13 +15,13 @@ class StatamicRestClient
   private array $query = [];
   private ResponseInterface $response;
 
-  public function __construct(string $host, string $endpoint)
+  public function __construct(string $host, string $endpoint = 'api')
   {
     $this->endpoint = $endpoint;
     $this->client = new Client([ 'base_uri' => $host, 'headers' => [ 'Content-Type' => 'application/json' ] ]);
   }
 
-  public static function make(string $host, string $endpoint)
+  public static function make(string $host, string $endpoint = 'api')
   {
     return new static($host, $endpoint);
   }
@@ -109,7 +109,7 @@ class StatamicRestClient
    * @return $this
    * @throws \GuzzleHttp\Exception\GuzzleException
    */
-  public function collection(string $collection): StatamicRestClient
+  public function entries(string $collection): StatamicRestClient
   {
     $this->path = "/{$this->endpoint}/collections/{$collection}/entries";
     $this->response = $this->client->get($this->path, [
