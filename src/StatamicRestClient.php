@@ -182,6 +182,16 @@ class StatamicRestClient
   }
 
   /**
+   * Return entire response
+   *
+   * @return array
+   */
+  public function all(): array
+  {
+    return (array) json_decode($this->response->getBody()->getContents());
+  }
+
+  /**
    * Get data node from response
    *
    * @return array
