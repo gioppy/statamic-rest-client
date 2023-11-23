@@ -69,7 +69,7 @@ StatamicRestClient::make(...)
 Get a single term from taxonomy:
 ```php
 StatamicRestClient::make(...)
-  ->entry('taxonomy_name', 'taxonomy_slug')
+  ->term('taxonomy_name', 'taxonomy_slug')
 ```
 ### Globals / Global
 TODO
@@ -115,8 +115,8 @@ StatamicRestClient::make(...)
 - [x] Entry
 - [ ] Collection Tree
 - [ ] Navigation Tree
-- [ ] Taxonomy Terms
-- [ ] Taxonomy Term
+- [x] Taxonomy Terms
+- [x] Taxonomy Term
 - [x] Assets
 - [x] Asset
 - [ ] Globals
