@@ -61,7 +61,16 @@ TODO
 ### Navigation Tree
 TODO
 ### Taxonomy Terms / Taxonomy Term
-TODO
+Get all terms of taxonomy:
+```php
+StatamicRestClient::make(...)
+  ->terms('taxonomy_name')
+```
+Get a single term from taxonomy:
+```php
+StatamicRestClient::make(...)
+  ->entry('taxonomy_name', 'taxonomy_slug')
+```
 ### Globals / Global
 TODO
 ### Assets / Asset

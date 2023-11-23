@@ -137,6 +137,39 @@ class StatamicRestClient
   }
 
   /**
+   * Get terms of a taxonomy
+   *
+   * @param string $taxonomy
+   * @return $this
+   * @throws \GuzzleHttp\Exception\GuzzleException
+   */
+  public function terms(string $taxonomy): StatamicRestClient
+  {
+    $this->path = "/{$this->endpoint}/taxonomies/{$taxonomy}/terms";
+    $this->response = $this->client->get($this->path, [
+      'query' => $this->query,
+    ]);
+    return $this;
+  }
+
+  /**
+   * Get single term of taxonomy
+   *
+   * @param string $taxonomy
+   * @param string $slug
+   * @return $this
+   * @throws \GuzzleHttp\Exception\GuzzleException
+   */
+  public function term(string $taxonomy, string $slug): StatamicRestClient
+  {
+    $this->path = "/{$this->endpoint}/taxonomies/{$taxonomy}/terms/{$slug}";
+    $this->response = $this->client->get($this->path, [
+      'query' => $this->query,
+    ]);
+    return $this;
+  }
+
+  /**
    * Get all assets from container
    *
    * @param string $container
