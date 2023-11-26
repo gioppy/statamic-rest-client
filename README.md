@@ -75,7 +75,16 @@ StatamicRestClient::make(...)
   ->term('taxonomy_name', 'taxonomy_slug')
 ```
 ### Globals / Global
-TODO
+Get all globals:
+```php
+StatamicRestClient::make(...)
+  ->globals()
+```
+Get single global:
+```php
+StatamicRestClient::make(...)
+  ->global('handle')
+```
 ### Assets / Asset
 Get all assets of one container:
 ```php
@@ -122,7 +131,7 @@ StatamicRestClient::make(...)
 - [x] Taxonomy Term
 - [x] Assets
 - [x] Asset
-- [ ] Globals
-- [ ] Global
+- [x] Globals
+- [x] Global
 - [ ] Test
 - [ ] Laravel integration
