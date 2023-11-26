@@ -59,7 +59,10 @@ StatamicRestClient::make(...)
 ### Collection Tree
 TODO
 ### Navigation Tree
-TODO
+```php
+StatamicRestClient::make(...)
+  ->navigation('navigation_name')
+```
 ### Taxonomy Terms / Taxonomy Term
 Get all terms of taxonomy:
 ```php
@@ -114,7 +117,7 @@ StatamicRestClient::make(...)
 - [x] Entries
 - [x] Entry
 - [ ] Collection Tree
-- [ ] Navigation Tree
+- [x] Navigation Tree
 - [x] Taxonomy Terms
 - [x] Taxonomy Term
 - [x] Assets

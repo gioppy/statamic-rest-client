@@ -137,6 +137,22 @@ class StatamicRestClient
   }
 
   /**
+   * Get navigation tree items
+   *
+   * @param string $name
+   * @return $this
+   * @throws \GuzzleHttp\Exception\GuzzleException
+   */
+  public function navigation(string $name): StatamicRestClient
+  {
+    $this->path = "/{$this->endpoint}/navs/{$name}/tree";
+    $this->response = $this->client->get($this->path, [
+      'query' => $this->query,
+    ]);
+    return $this;
+  }
+
+  /**
    * Get terms of a taxonomy
    *
    * @param string $taxonomy
