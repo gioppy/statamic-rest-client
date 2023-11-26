@@ -3,6 +3,7 @@
 namespace Gioppy\StatamicRestClient;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
 use Psr\Http\Message\ResponseInterface;
 
@@ -107,15 +108,12 @@ class StatamicRestClient
    *
    * @param string $collection
    * @return $this
-   * @throws \GuzzleHttp\Exception\GuzzleException
+   * @throws GuzzleException
    */
   public function entries(string $collection): StatamicRestClient
   {
     $this->path = "/{$this->endpoint}/collections/{$collection}/entries";
-    $this->response = $this->client->get($this->path, [
-      'query' => $this->query,
-    ]);
-
+    $this->request();
     return $this;
   }
 
@@ -125,14 +123,12 @@ class StatamicRestClient
    * @param string $collection
    * @param string $id
    * @return $this
-   * @throws \GuzzleHttp\Exception\GuzzleException
+   * @throws GuzzleException
    */
   public function entry(string $collection, string $id): StatamicRestClient
   {
     $this->path = "/{$this->endpoint}/collections/{$collection}/entries/{$id}";
-    $this->response = $this->client->get($this->path, [
-      'query' => $this->query,
-    ]);
+    $this->request();
     return $this;
   }
 
@@ -141,14 +137,12 @@ class StatamicRestClient
    *
    * @param string $name
    * @return $this
-   * @throws \GuzzleHttp\Exception\GuzzleException
+   * @throws GuzzleException
    */
   public function navigation(string $name): StatamicRestClient
   {
     $this->path = "/{$this->endpoint}/navs/{$name}/tree";
-    $this->response = $this->client->get($this->path, [
-      'query' => $this->query,
-    ]);
+    $this->request();
     return $this;
   }
 
@@ -157,14 +151,12 @@ class StatamicRestClient
    *
    * @param string $taxonomy
    * @return $this
-   * @throws \GuzzleHttp\Exception\GuzzleException
+   * @throws GuzzleException
    */
   public function terms(string $taxonomy): StatamicRestClient
   {
     $this->path = "/{$this->endpoint}/taxonomies/{$taxonomy}/terms";
-    $this->response = $this->client->get($this->path, [
-      'query' => $this->query,
-    ]);
+    $this->request();
     return $this;
   }
 
@@ -174,14 +166,12 @@ class StatamicRestClient
    * @param string $taxonomy
    * @param string $slug
    * @return $this
-   * @throws \GuzzleHttp\Exception\GuzzleException
+   * @throws GuzzleException
    */
   public function term(string $taxonomy, string $slug): StatamicRestClient
   {
     $this->path = "/{$this->endpoint}/taxonomies/{$taxonomy}/terms/{$slug}";
-    $this->response = $this->client->get($this->path, [
-      'query' => $this->query,
-    ]);
+    $this->request();
     return $this;
   }
 
@@ -189,14 +179,12 @@ class StatamicRestClient
    * Get all globals
    *
    * @return $this
-   * @throws \GuzzleHttp\Exception\GuzzleException
+   * @throws GuzzleException
    */
   public function globals(): StatamicRestClient
   {
     $this->path = "/{$this->endpoint}/globals";
-    $this->response = $this->client->get($this->path, [
-      'query' => $this->query,
-    ]);
+    $this->request();
     return $this;
   }
 
@@ -205,14 +193,12 @@ class StatamicRestClient
    *
    * @param string $handle
    * @return $this
-   * @throws \GuzzleHttp\Exception\GuzzleException
+   * @throws GuzzleException
    */
   public function global(string $handle): StatamicRestClient
   {
     $this->path = "/{$this->endpoint}/globals/{$handle}";
-    $this->response = $this->client->get($this->path, [
-      'query' => $this->query,
-    ]);
+    $this->request();
     return $this;
   }
 
@@ -221,14 +207,12 @@ class StatamicRestClient
    *
    * @param string $container
    * @return $this
-   * @throws \GuzzleHttp\Exception\GuzzleException\
+   * @throws GuzzleException
    */
   public function assets(string $container): StatamicRestClient
   {
     $this->path = "/{$this->endpoint}/assets/{$container}";
-    $this->response = $this->client->get($this->path, [
-      'query' => $this->query,
-    ]);
+    $this->request();
     return $this;
   }
 
@@ -238,14 +222,12 @@ class StatamicRestClient
    * @param string $container
    * @param string $path
    * @return $this
-   * @throws \GuzzleHttp\Exception\GuzzleException
+   * @throws GuzzleException
    */
   public function asset(string $container, string $path): StatamicRestClient
   {
     $this->path = "/{$this->endpoint}/assets/{$container}/{$path}";
-    $this->response = $this->client->get($this->path, [
-      'query' => $this->query,
-    ]);
+    $this->request();
     return $this;
   }
 
@@ -254,7 +236,7 @@ class StatamicRestClient
    *
    * @param string $id Id of asset, in the form of container::id
    * @return $this
-   * @throws \GuzzleHttp\Exception\GuzzleException
+   * @throws GuzzleException
    */
   public function assetById(string $id): StatamicRestClient
   {
@@ -289,6 +271,19 @@ class StatamicRestClient
   public function toCollection(): Collection
   {
     return collect(json_decode($this->response->getBody()->getContents())->data);
+  }
+
+  /**
+   * Execute a request based on path
+   *
+   * @return void
+   * @throws GuzzleException
+   */
+  protected function request(): void
+  {
+    $this->response = $this->client->get($this->path, [
+      'query' => $this->query,
+    ]);
   }
 
 }
