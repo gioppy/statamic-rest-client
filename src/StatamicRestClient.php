@@ -186,6 +186,37 @@ class StatamicRestClient
   }
 
   /**
+   * Get all globals
+   *
+   * @return $this
+   * @throws \GuzzleHttp\Exception\GuzzleException
+   */
+  public function globals(): StatamicRestClient
+  {
+    $this->path = "/{$this->endpoint}/globals";
+    $this->response = $this->client->get($this->path, [
+      'query' => $this->query,
+    ]);
+    return $this;
+  }
+
+  /**
+   * Get single global
+   *
+   * @param string $handle
+   * @return $this
+   * @throws \GuzzleHttp\Exception\GuzzleException
+   */
+  public function global(string $handle): StatamicRestClient
+  {
+    $this->path = "/{$this->endpoint}/globals/{$handle}";
+    $this->response = $this->client->get($this->path, [
+      'query' => $this->query,
+    ]);
+    return $this;
+  }
+
+  /**
    * Get all assets from container
    *
    * @param string $container
