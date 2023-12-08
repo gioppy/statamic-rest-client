@@ -4,17 +4,11 @@ namespace Gioppy\StatamicRestClient;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Support\Collection;
-use Psr\Http\Message\ResponseInterface;
 
 class StatamicRestClient
 {
 
-  private string $endpoint;
-  private Client $client;
-  private string $path;
-  private array $query = [];
-  private ResponseInterface $response;
+  use StatamicRestable;
 
   public function __construct(string $host, string $endpoint = 'api')
   {
@@ -22,7 +16,7 @@ class StatamicRestClient
     $this->client = new Client([ 'base_uri' => $host, 'headers' => [ 'Content-Type' => 'application/json' ] ]);
   }
 
-  public static function make(string $host, string $endpoint = 'api')
+  public static function make(string $host, string $endpoint = 'api'): static
   {
     return new static($host, $endpoint);
   }
@@ -33,7 +27,7 @@ class StatamicRestClient
    * @param array $fields Array of fields to include on response
    * @return $this
    */
-  public function fields(array $fields): StatamicRestClient
+  public function fields(array $fields): self
   {
     $this->query['fields'] = implode(',', $fields);
     return $this;
@@ -47,7 +41,7 @@ class StatamicRestClient
    * @param string|null $condition
    * @return $this
    */
-  public function where(string $field, mixed $value, string|null $condition = null): StatamicRestClient
+  public function where(string $field, mixed $value, string|null $condition = null): self
   {
     if ($condition) {
       $this->query["filter[{$field}:{$condition}]"] = $value;
@@ -63,7 +57,7 @@ class StatamicRestClient
    * @param string $site
    * @return $this
    */
-  public function whereSite(string $site): StatamicRestClient
+  public function whereSite(string $site): self
   {
     $this->query['site'] = $site;
     return $this;
@@ -75,13 +69,13 @@ class StatamicRestClient
    * @param array $fields
    * @return $this
    */
-  public function sort(array $fields): StatamicRestClient
+  public function sort(array $fields): self
   {
     $this->query['sort'] = implode(',', $fields);
     return $this;
   }
 
-  public function dump(): StatamicRestClient
+  public function dump(): self
   {
     dump(['path' => $this->path, 'query' => $this->query]);
     return $this;
@@ -94,7 +88,7 @@ class StatamicRestClient
    * @param int|null $page Page to load; leave empty to load first page
    * @return $this
    */
-  public function paginate(int $limit, int $page = null): StatamicRestClient
+  public function paginate(int $limit, int $page = null): self
   {
     $this->query['limit'] = $limit;
     if ($page) {
@@ -110,7 +104,7 @@ class StatamicRestClient
    * @return $this
    * @throws GuzzleException
    */
-  public function entries(string $collection): StatamicRestClient
+  public function entries(string $collection): self
   {
     $this->path = "/{$this->endpoint}/collections/{$collection}/entries";
     $this->request();
@@ -125,7 +119,7 @@ class StatamicRestClient
    * @return $this
    * @throws GuzzleException
    */
-  public function entry(string $collection, string $id): StatamicRestClient
+  public function entry(string $collection, string $id): self
   {
     $this->path = "/{$this->endpoint}/collections/{$collection}/entries/{$id}";
     $this->request();
@@ -139,7 +133,7 @@ class StatamicRestClient
    * @return $this
    * @throws GuzzleException
    */
-  public function navigation(string $name): StatamicRestClient
+  public function navigation(string $name): self
   {
     $this->path = "/{$this->endpoint}/navs/{$name}/tree";
     $this->request();
@@ -153,7 +147,7 @@ class StatamicRestClient
    * @return $this
    * @throws GuzzleException
    */
-  public function terms(string $taxonomy): StatamicRestClient
+  public function terms(string $taxonomy): self
   {
     $this->path = "/{$this->endpoint}/taxonomies/{$taxonomy}/terms";
     $this->request();
@@ -168,7 +162,7 @@ class StatamicRestClient
    * @return $this
    * @throws GuzzleException
    */
-  public function term(string $taxonomy, string $slug): StatamicRestClient
+  public function term(string $taxonomy, string $slug): self
   {
     $this->path = "/{$this->endpoint}/taxonomies/{$taxonomy}/terms/{$slug}";
     $this->request();
@@ -181,7 +175,7 @@ class StatamicRestClient
    * @return $this
    * @throws GuzzleException
    */
-  public function globals(): StatamicRestClient
+  public function globals(): self
   {
     $this->path = "/{$this->endpoint}/globals";
     $this->request();
@@ -195,7 +189,7 @@ class StatamicRestClient
    * @return $this
    * @throws GuzzleException
    */
-  public function global(string $handle): StatamicRestClient
+  public function global(string $handle): self
   {
     $this->path = "/{$this->endpoint}/globals/{$handle}";
     $this->request();
@@ -209,7 +203,7 @@ class StatamicRestClient
    * @return $this
    * @throws GuzzleException
    */
-  public function assets(string $container): StatamicRestClient
+  public function assets(string $container): self
   {
     $this->path = "/{$this->endpoint}/assets/{$container}";
     $this->request();
@@ -224,7 +218,7 @@ class StatamicRestClient
    * @return $this
    * @throws GuzzleException
    */
-  public function asset(string $container, string $path): StatamicRestClient
+  public function asset(string $container, string $path): self
   {
     $this->path = "/{$this->endpoint}/assets/{$container}/{$path}";
     $this->request();
@@ -238,52 +232,9 @@ class StatamicRestClient
    * @return $this
    * @throws GuzzleException
    */
-  public function assetById(string $id): StatamicRestClient
+  public function assetById(string $id): self
   {
     return $this->asset(...explode('::', $id));
-  }
-
-  /**
-   * Return entire response
-   *
-   * @return array
-   */
-  public function all(): array
-  {
-    return (array) json_decode($this->response->getBody()->getContents());
-  }
-
-  /**
-   * Get data node from response
-   *
-   * @return array
-   */
-  public function data(): array
-  {
-    return (array) json_decode($this->response->getBody()->getContents())->data;
-  }
-
-  /**
-   * Return data node from response as Collection
-   *
-   * @return Collection
-   */
-  public function toCollection(): Collection
-  {
-    return collect(json_decode($this->response->getBody()->getContents())->data);
-  }
-
-  /**
-   * Execute a request based on path
-   *
-   * @return void
-   * @throws GuzzleException
-   */
-  protected function request(): void
-  {
-    $this->response = $this->client->get($this->path, [
-      'query' => $this->query,
-    ]);
   }
 
 }
