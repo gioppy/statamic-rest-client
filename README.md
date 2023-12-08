@@ -121,6 +121,14 @@ StatamicRestClient::make(...)
   ->entries('collection')
   ->toCollection()
 ```
+### Integration with Statamic Glide Rest
+[Statami Glide Rest](https://github.com/gioppy/statamic-glide-rest) is a small addon for Statamic that expose glide manipulation presets on a REST API endpoint. You can get an asset response with a glide presets with the class `StatamicGlideRest`:
+```php
+StatamicGlideRest::make($host)
+  ->presets(['small', 'medium'])
+  ->glide('container', 'path')
+  ->data()
+```
 
 ## TODO
 - [x] Entries
@@ -134,4 +142,5 @@ StatamicRestClient::make(...)
 - [x] Globals
 - [x] Global
 - [ ] Test
+- [x] Integration with [Statamic Glide Rest](https://github.com/gioppy/statamic-glide-rest)
 - [ ] Laravel integration
