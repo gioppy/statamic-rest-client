@@ -126,7 +126,7 @@ StatamicRestClient::make(...)
 ```php
 StatamicGlideRest::make($host)
   ->presets(['small', 'medium'])
-  ->glide('container', 'path')
+  ->glide('container::path')
   ->data()
 ```
 
